@@ -741,14 +741,26 @@ extrayez les données pour les 2 mesures et les 3 pays (appelons là `df3`)
 
 ```{code-cell} ipython3
 # votre code
+df_pays = clean_df.loc[['France', 'Italy', 'Germany']]
+
+df3 = df_pays.pivot_table(
+    index='date',
+    columns='country',
+    values=['deaths', 'confirmed']
+)
+df3.head(10000)
 ```
 
 ```{code-cell} ipython3
 :tags: [raises-exception]
 
 # que du coup il n'y a plus qu'à plotter
-# 
-# à vous
+df3.plot(
+    title='Évolution des cas confirmés et décès par pays',
+    xlabel='Date',
+    ylabel='Nombre',
+)
+plt.show()
 ```
 
 ### fonction d'extraction
@@ -767,22 +779,55 @@ et qui retourne une dataframe *prête à être affichée*
 :jp-MarkdownHeadingCollapsed: true
 
 # votre code
+def extract(pays, mesures, date_debut, date_fin):
+    date_debut = pd.to_datetime(date_debut) #on convertit pour pandas
+    date_fin = pd.to_datetime(date_fin)
+    #idem que précédemment
+    df_pays = clean_df.loc[pays]
+    #on réinitialise l'index pour pouvoir faire un masque sur la période
+    df_pays = df_pays.reset_index()
+    #on conserve seulement la période souhaitée avec un slicing
+    periode = ( df_pays['date'] >= date_debut) & ( df_pays['date'] <= date_fin )
+    df_periode = df_pays[periode]
+    #
+    df_periode = df_periode.set_index(['country', 'date'])
+    #on sélectionne les mesures demandées
+    df_mesures = df_periode[mesures]
+    df_finale = df_mesures.pivot_table(index='date',
+                                       columns='country',
+                                       values=mesures)
+    return df_finale
+
+
+extract(['France', 'Italy'], ['confirmed', 'deaths'], '2020-01-22', '2023-03-08')
 ```
 
+```{code-cell} ipython3
 en utilisant cette fonction, plottez sur un même graphique les données de deux pays
+```
 
 ```{code-cell} ipython3
 # votre code
+df_2pays = extract(['France', 'Italy'], ['confirmed', 'deaths'], '2020-01-01', '2023-03-01')
+
+df_2pays.plot(
+    title="Décès et cas confirmés de la France et de l'Italie",
+    xlabel='Date',
+    ylabel='Nombre',
+)
+plt.show()
 ```
 
 ## proposez des analyses personnelles sur ces données
 
 ```{code-cell} ipython3
 # votre code
+clean_df.describe()
 ```
 
 ```{code-cell} ipython3
 # votre code
+france = clean_df.loc['France']
 ```
 
 ```{code-cell} ipython3

@@ -802,9 +802,7 @@ def extract(pays, mesures, date_debut, date_fin):
 extract(['France', 'Italy'], ['confirmed', 'deaths'], '2020-01-22', '2023-03-08')
 ```
 
-```{code-cell} ipython3
 en utilisant cette fonction, plottez sur un même graphique les données de deux pays
-```
 
 ```{code-cell} ipython3
 # votre code
@@ -827,21 +825,15 @@ clean_df.describe()
 
 ```{code-cell} ipython3
 # votre code
-france = clean_df.loc['France']
+clean_df.loc['France'].describe()
 ```
 
 ```{code-cell} ipython3
 # votre code
+clean_df.loc['Italy'].describe()
 ```
 
 ```{code-cell} ipython3
 # votre code
-```
-
-```{code-cell} ipython3
-# .../...
-```
-
-```{code-cell} ipython3
-
+clean_df.loc['Germany'].describe()
 ```
